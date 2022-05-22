@@ -1,0 +1,5 @@
+# Project exclude paths
+/client/node_modules/
+/client/src/index.js
+/server/node_modules/
+/server/app.js
