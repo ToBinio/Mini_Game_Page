@@ -11,9 +11,9 @@ exports.io = new socketIo.Server(server, {
         origin: "*"
     }
 });
-app.use(express.static(path.join(__dirname, "../client/build/")));
+app.use(express.static(path.join(__dirname, "../client/dist/")));
 app.get("", function (req, res) {
-    res.sendFile(path.join(__dirname, "../client/build/public/index.html"));
+    res.sendFile(path.join(__dirname, "../client/dist/index.html"));
 });
 server.listen(8080, function () {
     console.log("Server started on Port: 8080");

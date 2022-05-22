@@ -1,19 +1,17 @@
 {
   "name": "client",
-  "version": "1.0.0",
-  "description": "",
-  "main": "src/index.js",
+  "private": true,
+  "version": "0.0.0",
   "scripts": {
-    "build": "snowpack build",
-    "dev": "nodemon --ignore build --ext html,js,css --exec npm run build"
-  },
-  "dependencies": {
-    "socket.io-client": "^4.5.1"
+    "dev": "vite",
+    "build": "tsc && vite build"
   },
   "devDependencies": {
     "@types/socket.io-client": "^3.0.0",
-    "nodemon": "^2.0.16",
-    "snowpack": "^3.8.8",
-    "typescript": "^4.6.4"
+    "typescript": "^4.5.4",
+    "vite": "^2.9.9"
+  },
+  "dependencies": {
+    "socket.io-client": "^4.5.1"
   }
 }

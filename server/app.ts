@@ -13,10 +13,10 @@ export const io = new socketIo.Server(server, {
     }
 })
 
-app.use(express.static(path.join(__dirname, "../client/build/")))
+app.use(express.static(path.join(__dirname, "../client/dist/")))
 
 app.get("", (req, res) => {
-    res.sendFile(path.join(__dirname, "../client/build/public/index.html"))
+    res.sendFile(path.join(__dirname, "../client/dist/index.html"))
 })
 
 server.listen(8080, () => {
