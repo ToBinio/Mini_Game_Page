@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addClientToQue = void 0;
+exports.removeClientFromQue = exports.addClientToQue = void 0;
 var Room_1 = require("../game/Room");
 var clients = [];
 function addClientToQue(client) {
@@ -14,4 +14,8 @@ function addClientToQue(client) {
     clients.push(client);
 }
 exports.addClientToQue = addClientToQue;
+function removeClientFromQue(client) {
+    clients.splice(clients.indexOf(client), 1);
+}
+exports.removeClientFromQue = removeClientFromQue;
 //todo remove from que when closing browser

@@ -4,7 +4,6 @@ import {Room} from "../game/Room";
 let clients: Client[] = [];
 
 export function addClientToQue(client: Client) {
-
     for (let i = 0; i < clients.length; i++) {
         if (client.hasGamePair(clients[i])) {
             new Room(client, clients[i])
@@ -15,6 +14,10 @@ export function addClientToQue(client: Client) {
     }
 
     clients.push(client)
+}
+
+export function removeClientFromQue(client: Client) {
+    clients.splice(clients.indexOf(client), 1)
 }
 
 //todo remove from que when closing browser

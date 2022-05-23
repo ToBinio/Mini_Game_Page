@@ -9,8 +9,16 @@ export class Room {
         this.CLIENT_A = clientA;
         this.CLIENT_B = clientB;
 
+        this.CLIENT_A.joinRoom(this)
+        this.CLIENT_B.joinRoom(this)
+
         //todo choose random Game
         this.brodCast("joinedGame", GameTypes.CONNECT_FOUR)
+    }
+
+    //todo not Public
+    public close() {
+        this.brodCast("closedGame", {})
     }
 
     private brodCast(ev: string, data) {
