@@ -3,11 +3,12 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "dev": "vite",
+    "dev": "nodemon --ignore dist --ext html,ts,css --exec npm run build",
     "build": "tsc && vite build"
   },
   "devDependencies": {
     "@types/socket.io-client": "^3.0.0",
+    "nodemon": "^2.0.16",
     "typescript": "^4.5.4",
     "vite": "^2.9.9"
   },

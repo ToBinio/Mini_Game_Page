@@ -1,11 +1,14 @@
 import * as path from "path";
 import * as socketIo from "socket.io";
+import {Client} from "./client/Client";
 
 const express = require("express")
 
 const app = express();
 
 const server = require("http").createServer(app);
+
+require("./client/Clients.js");
 
 export const io = new socketIo.Server(server, {
     cors: {
@@ -25,4 +28,5 @@ server.listen(8080, () => {
 
 io.on("connect", socket => {
     console.log("socket : " + socket.id + " has connected");
+    new Client(socket)
 })
