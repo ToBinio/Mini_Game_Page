@@ -1,11 +1,13 @@
 import {Socket} from "socket.io";
-import {GameTypes} from "../game/GameTypes";
 import {addClientToQue, removeClientFromQue} from "./Clients";
 import {Room} from "../game/Room";
+import {GameTypes, RoomInfo} from "../../types/Types";
 
 export class Client {
     private readonly SOCKET: Socket;
     private readonly GAMES_TO_PLAY: Boolean[];
+
+    private name: string;
 
     private clientState: ClientState
     private room: Room;
@@ -19,10 +21,16 @@ export class Client {
         this.initSocket()
     }
 
+    public getName(): string {
+        return this.name;
+    }
+
     private initSocket() {
         this.SOCKET.on("addGameToPlay", (game: GameTypes) => {
             if (this.clientState != ClientState.SLEEPING) return
-            
+
+            console.log("log");
+
             this.GAMES_TO_PLAY[game] = true;
         })
 
@@ -32,10 +40,27 @@ export class Client {
             this.GAMES_TO_PLAY[game] = false;
         })
 
-        this.SOCKET.on("joinGameQue", () => {
+        this.SOCKET.on("joinGameQue", (name: string) => {
             if (this.clientState != ClientState.SLEEPING) return
 
+            //todo check at leased one is set
+
+            let hasGameToPlay = false;
+
+            for (let boolean of this.GAMES_TO_PLAY) {
+                if(boolean) {
+                    hasGameToPlay = true
+                    break
+                }
+            }
+
+            if(!hasGameToPlay) return;
+
+            this.name = name;
+
             this.clientState = ClientState.SEARCHING_GAME
+            this.SOCKET.emit("searchingGame", this.GAMES_TO_PLAY)
+
             addClientToQue(this)
         })
 
@@ -52,15 +77,22 @@ export class Client {
         this.SOCKET.emit(ev, data);
     }
 
-    public hasGamePair(otherClient: Client): boolean {
+    public getGamePairs(otherClient: Client): boolean[] {
+
+        let gamePairs: boolean[] = []
+
         for (let i = 0; i < this.GAMES_TO_PLAY.length; i++) {
-            if (otherClient.GAMES_TO_PLAY[i] && this.GAMES_TO_PLAY[i]) return true;
+            if (otherClient.GAMES_TO_PLAY[i] && this.GAMES_TO_PLAY[i]) gamePairs[i] = true;
         }
+
+        return gamePairs
     }
 
-    public joinRoom(room: Room) {
+    public joinRoom(room: Room, info: RoomInfo) {
         this.room = room;
         this.clientState = ClientState.PLAYING_GAME;
+
+        this.SOCKET.emit("joinRoom", info)
     }
 }
 

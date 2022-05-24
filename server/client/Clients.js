@@ -5,8 +5,9 @@ var Room_1 = require("../game/Room");
 var clients = [];
 function addClientToQue(client) {
     for (var i = 0; i < clients.length; i++) {
-        if (client.hasGamePair(clients[i])) {
-            new Room_1.Room(client, clients[i]);
+        var gamePairs = client.getGamePairs(clients[i]);
+        if (gamePairs.indexOf(true) != -1) {
+            new Room_1.Room(client, clients[i], gamePairs);
             clients.splice(i, 1);
             return;
         }
@@ -18,4 +19,3 @@ function removeClientFromQue(client) {
     clients.splice(clients.indexOf(client), 1);
 }
 exports.removeClientFromQue = removeClientFromQue;
-//todo remove from que when closing browser

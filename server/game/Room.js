@@ -1,16 +1,27 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Room = void 0;
-var GameTypes_1 = require("./GameTypes");
+var Types_1 = require("../../types/Types");
 var Room = /** @class */ (function () {
-    function Room(clientA, clientB) {
+    function Room(clientA, clientB, possibleGames) {
+        this.POSSIBLE_GAMES = [];
         this.CLIENT_A = clientA;
         this.CLIENT_B = clientB;
-        this.CLIENT_A.joinRoom(this);
-        this.CLIENT_B.joinRoom(this);
-        //todo choose random Game
-        this.brodCast("joinedGame", GameTypes_1.GameTypes.CONNECT_FOUR);
+        this.POSSIBLE_GAMES = possibleGames;
+        var roomInfo = {
+            names: { playerA: clientA.getName(), playerB: clientB.getName() },
+            possibleGames: this.POSSIBLE_GAMES,
+            whichPLayer: Types_1.Player.PLAYER_A
+        };
+        this.CLIENT_A.joinRoom(this, roomInfo);
+        roomInfo.whichPLayer = Types_1.Player.PLAYER_B;
+        this.CLIENT_B.joinRoom(this, roomInfo);
+        this.startGame();
     }
+    Room.prototype.startGame = function () {
+        //todo choose random Game
+        this.brodCast("startGame", Types_1.GameTypes.ROCK_PAPER_SCISSOR);
+    };
     //todo not Public
     Room.prototype.close = function () {
         this.brodCast("closedGame", {});
