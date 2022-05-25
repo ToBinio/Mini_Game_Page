@@ -30,3 +30,9 @@ io.on("connect", socket => {
     console.log("socket : " + socket.id + " has connected");
     new Client(socket)
 })
+
+export function sleep(ms) {
+    return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+    });
+}

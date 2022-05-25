@@ -4,20 +4,22 @@ export enum state {
 
 let currentState = state.CHOOSING;
 
-let stateInfoDiv = document.getElementById("stateInfo")! as HTMLElement;
+const stateInfoDiv = document.getElementById("stateInfo")! as HTMLElement;
+const gameSpaceDiv = document.getElementById("gameSpace")! as HTMLElement;
 
-let playGameDiv = document.getElementById("playGame")!;
-let joinGameDiv = document.getElementById("joinGame")!;
+const playGameDiv = document.getElementById("playGame")!;
+const joinGameDiv = document.getElementById("joinGame")!;
 
 export function setState(newState: state) {
     currentState = newState;
 
-    if(currentState != state.CHOOSING){
+    if (currentState != state.CHOOSING) {
         joinGameDiv.style.display = "none"
         playGameDiv.style.display = "block"
-    }else{
+    } else {
         joinGameDiv.style.display = "block"
         playGameDiv.style.display = "none"
+        gameSpaceDiv.innerHTML = "";
     }
 }
 

@@ -4,7 +4,7 @@ import {Room} from "../game/Room";
 import {GameTypes, RoomInfo} from "../../types/Types";
 
 export class Client {
-    private readonly SOCKET: Socket;
+    public readonly SOCKET: Socket;
     private readonly GAMES_TO_PLAY: Boolean[];
 
     private name: string;
@@ -43,23 +43,21 @@ export class Client {
         this.SOCKET.on("joinGameQue", (name: string) => {
             if (this.clientState != ClientState.SLEEPING) return
 
-            //todo check at leased one is set
-
             let hasGameToPlay = false;
 
             for (let boolean of this.GAMES_TO_PLAY) {
-                if(boolean) {
+                if (boolean) {
                     hasGameToPlay = true
                     break
                 }
             }
 
-            if(!hasGameToPlay) return;
+            if (!hasGameToPlay) return;
 
             this.name = name;
 
             this.clientState = ClientState.SEARCHING_GAME
-            this.SOCKET.emit("searchingGame", this.GAMES_TO_PLAY)
+            this.SOCKET.emit("searchingRoom", this.GAMES_TO_PLAY)
 
             addClientToQue(this)
         })
@@ -93,6 +91,13 @@ export class Client {
         this.clientState = ClientState.PLAYING_GAME;
 
         this.SOCKET.emit("joinRoom", info)
+    }
+
+    public closedRoom() {
+        this.room = undefined;
+        this.clientState = ClientState.SLEEPING;
+
+        this.SOCKET.emit("closedRoom")
     }
 }
 

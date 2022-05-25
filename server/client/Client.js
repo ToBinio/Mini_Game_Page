@@ -9,11 +9,15 @@ var Client = /** @class */ (function () {
         this.clientState = ClientState.SLEEPING;
         this.initSocket();
     }
+    Client.prototype.getName = function () {
+        return this.name;
+    };
     Client.prototype.initSocket = function () {
         var _this = this;
         this.SOCKET.on("addGameToPlay", function (game) {
             if (_this.clientState != ClientState.SLEEPING)
                 return;
+            console.log("log");
             _this.GAMES_TO_PLAY[game] = true;
         });
         this.SOCKET.on("removeGameToPlay", function (game) {
@@ -21,10 +25,22 @@ var Client = /** @class */ (function () {
                 return;
             _this.GAMES_TO_PLAY[game] = false;
         });
-        this.SOCKET.on("joinGameQue", function () {
+        this.SOCKET.on("joinGameQue", function (name) {
             if (_this.clientState != ClientState.SLEEPING)
                 return;
+            var hasGameToPlay = false;
+            for (var _i = 0, _a = _this.GAMES_TO_PLAY; _i < _a.length; _i++) {
+                var boolean = _a[_i];
+                if (boolean) {
+                    hasGameToPlay = true;
+                    break;
+                }
+            }
+            if (!hasGameToPlay)
+                return;
+            _this.name = name;
             _this.clientState = ClientState.SEARCHING_GAME;
+            _this.SOCKET.emit("searchingRoom", _this.GAMES_TO_PLAY);
             (0, Clients_1.addClientToQue)(_this);
         });
         this.SOCKET.on("disconnect", function () {
@@ -39,15 +55,23 @@ var Client = /** @class */ (function () {
     Client.prototype.sendMessage = function (ev, data) {
         this.SOCKET.emit(ev, data);
     };
-    Client.prototype.hasGamePair = function (otherClient) {
+    Client.prototype.getGamePairs = function (otherClient) {
+        var gamePairs = [];
         for (var i = 0; i < this.GAMES_TO_PLAY.length; i++) {
             if (otherClient.GAMES_TO_PLAY[i] && this.GAMES_TO_PLAY[i])
-                return true;
+                gamePairs[i] = true;
         }
+        return gamePairs;
     };
-    Client.prototype.joinRoom = function (room) {
+    Client.prototype.joinRoom = function (room, info) {
         this.room = room;
         this.clientState = ClientState.PLAYING_GAME;
+        this.SOCKET.emit("joinRoom", info);
+    };
+    Client.prototype.closedRoom = function () {
+        this.room = undefined;
+        this.clientState = ClientState.SLEEPING;
+        this.SOCKET.emit("closedRoom");
     };
     return Client;
 }());

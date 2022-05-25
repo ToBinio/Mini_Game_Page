@@ -4,6 +4,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Mini Games</title>
+    <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
 <h1>Mini games</h1>
@@ -12,14 +13,19 @@
 <div id="joinGame">
     <ul id="chooseGames">
     </ul>
-    <input type="text" name="userName" id="userNameInput" placeholder="Username">
+    <label for="userNameInput">username: </label><input type="text" name="userName" id="userNameInput"
+                                                        placeholder="Username">
     <button id="joinButton">join Game</button>
 </div>
 <div id="playGame" style="display: none">
     <div id="gameInfo">
     </div>
     <ul id="possibleGames"></ul>
+    <div id="gameSpace"></div>
 </div>
 <script type="module" src="./src/index.ts"></script>
+<script type="module" src="./src/joinGame.ts"></script>
+<script type="module" src="./src/playGame.ts"></script>
+<script type="module" src="./src/stateManger.ts"></script>
 </body>
 </html>
