@@ -8,9 +8,9 @@ WORKDIR ./client
 RUN npm i
 RUN npm run build
 
-WORKDIR ./server
+WORKDIR ../server
 RUN npm i --production
 
-WORKDIR /
+WORKDIR ../
 
 CMD ["node","server/app.js"]
