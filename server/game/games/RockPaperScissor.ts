@@ -20,10 +20,12 @@ export class RockPaperScissor extends Game {
     }
 
     async round() {
-        if ((this.playerAOption + 1) % 3 == this.playerBOption) {
-            this.playerAScore++;
-        } else if ((this.playerAOption - 1) % 3 == this.playerBOption) {
-            this.playerBScore++;
+        if (this.playerAOption != this.playerBOption) {
+            if ((this.playerAOption + 1) % 3 == this.playerBOption) {
+                this.playerAScore++;
+            } else {
+                this.playerBScore++;
+            }
         }
 
         this.room.brodCast("rpsRoundInfo", {

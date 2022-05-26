@@ -71,11 +71,13 @@ var RockPaperScissor = /** @class */ (function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if ((this.playerAOption + 1) % 3 == this.playerBOption) {
-                            this.playerAScore++;
-                        }
-                        else if ((this.playerAOption - 1) % 3 == this.playerBOption) {
-                            this.playerBScore++;
+                        if (this.playerAOption != this.playerBOption) {
+                            if ((this.playerAOption + 1) % 3 == this.playerBOption) {
+                                this.playerAScore++;
+                            }
+                            else {
+                                this.playerBScore++;
+                            }
                         }
                         this.room.brodCast("rpsRoundInfo", {
                             playerAOption: this.playerAOption,
