@@ -11,4 +11,6 @@ RUN npm run build
 WORKDIR ./server
 RUN npm i --production
 
+WORKDIR /
+
 CMD ["node","server/app.js"]
