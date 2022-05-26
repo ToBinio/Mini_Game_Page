@@ -8,8 +8,8 @@ export abstract class Game {
     protected constructor(room: Room) {
         this.room = room;
 
-        this.setUpSocket(room.CLIENT_A, Player.PLAYER_A);
-        this.setUpSocket(room.CLIENT_B, Player.PLAYER_B);
+        this.setUpSocket(room.CLIENTS[0], Player.PLAYER_A);
+        this.setUpSocket(room.CLIENTS[1], Player.PLAYER_B);
 
         //todo only start when both player gave ready
         this.start();

@@ -1,0 +1,101 @@
+#gameSpace {
+    display: flex;
+
+    margin: 5%;
+    width: 90%;
+    height: 300px;
+
+    justify-content: space-around;
+
+    font-size: xx-large;
+}
+
+#gameSpace .rpsSpace {
+    display: flex;
+
+    width: 40%;
+    height: 100%;
+
+    flex-direction: column;
+}
+
+#gameSpace .rpsSpace div {
+    text-align: center;
+
+    width: 100%;
+    height: 10%
+}
+
+#rpsButtons button {
+    position: relative;
+
+    border: none;
+
+    padding: 0;
+
+    width: 33%;
+    height: 100%;
+
+    transition: 0.3s ease-in;
+}
+
+#rpsButtons button img {
+    position: relative;
+
+    width: 80%;
+
+    margin: 5%;
+
+    transition: 0.5s;
+}
+
+#rpsButtons, #rpsOpponent {
+    display: flex;
+    width: 100% !important;
+    height: 90% !important;
+
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+}
+
+#rpsButtons button:hover img, #rpsButtons button.chosen img {
+    width: 100%;
+
+    margin: 0;
+}
+
+#rpsButtons button:hover img {
+    filter: drop-shadow(7px 9px 3px rgb(0 0 0 / 0.4));
+}
+
+#rpsButtons button:disabled:not(.chosen) {
+    width: 0;
+    height: 0;
+}
+
+
+#rpsOpponent img {
+    width: 7.5%;
+    filter: grayscale(0.8);
+
+    transition: 0.4s ease-in;
+
+}
+
+#rpsOpponent.chosen img {
+    width: 0;
+}
+
+#rpsOpponent img.chosen {
+    width: 33%;
+
+    filter: grayscale(0);
+}
+
+#rpsVS {
+    display: flex;
+    flex-direction: column;
+
+    justify-content: center;
+}

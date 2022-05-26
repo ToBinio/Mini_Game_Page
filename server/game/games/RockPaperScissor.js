@@ -77,17 +77,13 @@ var RockPaperScissor = /** @class */ (function (_super) {
                         else if ((this.playerAOption - 1) % 3 == this.playerBOption) {
                             this.playerBScore++;
                         }
-                        this.room.CLIENT_A.SOCKET.emit("rpsRoundInfo", {
-                            opponentOption: this.playerBOption,
-                            ownScore: this.playerAScore,
-                            opponentScore: this.playerBScore
+                        this.room.brodCast("rpsRoundInfo", {
+                            playerAOption: this.playerAOption,
+                            playerBOption: this.playerBOption,
+                            playerAScore: this.playerAScore,
+                            playerBScore: this.playerBScore
                         });
-                        this.room.CLIENT_B.SOCKET.emit("rpsRoundInfo", {
-                            opponentOption: this.playerAOption,
-                            ownScore: this.playerBScore,
-                            opponentScore: this.playerAScore
-                        });
-                        return [4 /*yield*/, (0, app_1.sleep)(1000)];
+                        return [4 /*yield*/, (0, app_1.sleep)(2000)];
                     case 1:
                         _a.sent();
                         if (this.playerAScore >= 3) {

@@ -17,7 +17,6 @@ var Client = /** @class */ (function () {
         this.SOCKET.on("addGameToPlay", function (game) {
             if (_this.clientState != ClientState.SLEEPING)
                 return;
-            console.log("log");
             _this.GAMES_TO_PLAY[game] = true;
         });
         this.SOCKET.on("removeGameToPlay", function (game) {
@@ -40,8 +39,12 @@ var Client = /** @class */ (function () {
                 return;
             _this.name = name;
             _this.clientState = ClientState.SEARCHING_GAME;
-            _this.SOCKET.emit("searchingRoom", _this.GAMES_TO_PLAY);
+            _this.SOCKET.emit("startSearchingRoom", _this.GAMES_TO_PLAY);
             (0, Clients_1.addClientToQue)(_this);
+        });
+        this.SOCKET.on("nextGame", function () {
+            if (_this.room)
+                _this.room.setNextGameOpinion(_this);
         });
         this.SOCKET.on("disconnect", function () {
             if (_this.clientState == ClientState.SEARCHING_GAME) {
@@ -66,7 +69,7 @@ var Client = /** @class */ (function () {
     Client.prototype.joinRoom = function (room, info) {
         this.room = room;
         this.clientState = ClientState.PLAYING_GAME;
-        this.SOCKET.emit("joinRoom", info);
+        this.SOCKET.emit("joinedRoom", info);
     };
     Client.prototype.closedRoom = function () {
         this.room = undefined;

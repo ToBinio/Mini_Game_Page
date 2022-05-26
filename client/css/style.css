@@ -6,3 +6,8 @@ body {
     font-family: sans-serif;
     color: white;
 }
+
+button {
+    background-color: transparent;
+    border-style: solid;
+}

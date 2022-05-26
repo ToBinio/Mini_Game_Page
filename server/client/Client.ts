@@ -28,9 +28,7 @@ export class Client {
     private initSocket() {
         this.SOCKET.on("addGameToPlay", (game: GameTypes) => {
             if (this.clientState != ClientState.SLEEPING) return
-
-            console.log("log");
-
+            
             this.GAMES_TO_PLAY[game] = true;
         })
 
@@ -57,9 +55,13 @@ export class Client {
             this.name = name;
 
             this.clientState = ClientState.SEARCHING_GAME
-            this.SOCKET.emit("searchingRoom", this.GAMES_TO_PLAY)
+            this.SOCKET.emit("startSearchingRoom", this.GAMES_TO_PLAY)
 
             addClientToQue(this)
+        })
+
+        this.SOCKET.on("nextGame", () => {
+            if (this.room) this.room.setNextGameOpinion(this);
         })
 
         this.SOCKET.on("disconnect", () => {
@@ -90,7 +92,7 @@ export class Client {
         this.room = room;
         this.clientState = ClientState.PLAYING_GAME;
 
-        this.SOCKET.emit("joinRoom", info)
+        this.SOCKET.emit("joinedRoom", info)
     }
 
     public closedRoom() {

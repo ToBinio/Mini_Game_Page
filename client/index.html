@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Mini Games</title>
     <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/rockPaperScissor.css">
 </head>
 <body>
 <h1>Mini games</h1>
@@ -18,9 +19,11 @@
     <button id="joinButton">join Game</button>
 </div>
 <div id="playGame" style="display: none">
-    <div id="gameInfo">
+    <div>
+        <span id="roomScore">0 : 0</span>
+        <ul id="possibleGames"></ul>
+        <button id="nextGame">nextGame</button>
     </div>
-    <ul id="possibleGames"></ul>
     <div id="gameSpace"></div>
 </div>
 <script type="module" src="./src/index.ts"></script>

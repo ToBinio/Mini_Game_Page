@@ -5,20 +5,19 @@ var Types_1 = require("../../types/Types");
 var RockPaperScissor_1 = require("./games/RockPaperScissor");
 var Room = /** @class */ (function () {
     function Room(clientA, clientB, possibleGames) {
-        this.clientAScore = 0;
-        this.clientBScore = 0;
+        this.clientsScores = [0, 0];
         this.POSSIBLE_GAMES = [];
-        this.CLIENT_A = clientA;
-        this.CLIENT_B = clientB;
+        this.nextGameOpinion = [false, false];
+        this.CLIENTS = [clientA, clientB];
         this.POSSIBLE_GAMES = possibleGames;
         var roomInfo = {
             names: { playerA: clientA.getName(), playerB: clientB.getName() },
             possibleGames: this.POSSIBLE_GAMES,
             whichPLayer: Types_1.Player.PLAYER_A
         };
-        this.CLIENT_A.joinRoom(this, roomInfo);
+        this.CLIENTS[0].joinRoom(this, roomInfo);
         roomInfo.whichPLayer = Types_1.Player.PLAYER_B;
-        this.CLIENT_B.joinRoom(this, roomInfo);
+        this.CLIENTS[1].joinRoom(this, roomInfo);
         this.startRandomGame();
     }
     Room.prototype.startRandomGame = function () {
@@ -28,26 +27,42 @@ var Room = /** @class */ (function () {
     };
     Room.prototype.endGame = function (winner) {
         if (winner == Types_1.Player.PLAYER_A)
-            this.clientAScore++;
+            this.clientsScores[0]++;
         else
-            this.clientBScore++;
-        this.game.tearDownSocket(this.CLIENT_A, Types_1.Player.PLAYER_A);
-        this.game.tearDownSocket(this.CLIENT_B, Types_1.Player.PLAYER_B);
+            this.clientsScores[1]++;
+        this.brodCast("roomScores", this.clientsScores);
+        this.game.tearDownSocket(this.CLIENTS[0], Types_1.Player.PLAYER_A);
+        this.game.tearDownSocket(this.CLIENTS[1], Types_1.Player.PLAYER_B);
         this.game = undefined;
-        //todo
-        this.close();
+    };
+    Room.prototype.setNextGameOpinion = function (client) {
+        if (this.game != null)
+            return;
+        if (client.getName() == this.CLIENTS[0].getName()) {
+            this.nextGameOpinion[0] = !this.nextGameOpinion[0];
+            this.brodCast("nextGameOpinion", { who: Types_1.Player.PLAYER_A, opinion: this.nextGameOpinion[0] });
+        }
+        else {
+            this.nextGameOpinion[1] = !this.nextGameOpinion[1];
+            this.brodCast("nextGameOpinion", { who: Types_1.Player.PLAYER_B, opinion: this.nextGameOpinion[1] });
+        }
+        if (this.nextGameOpinion[0] && this.nextGameOpinion[1]) {
+            this.nextGameOpinion[0] = false;
+            this.nextGameOpinion[1] = false;
+            this.startRandomGame();
+        }
     };
     //todo not Public
     Room.prototype.close = function () {
         if (this.game)
             this.endGame(Types_1.Player.PLAYER_A);
-        this.CLIENT_A.closedRoom();
-        this.CLIENT_B.closedRoom();
+        this.CLIENTS[0].closedRoom();
+        this.CLIENTS[1].closedRoom();
     };
     Room.prototype.brodCast = function (ev, data) {
         if (data === void 0) { data = {}; }
-        this.CLIENT_A.sendMessage(ev, data);
-        this.CLIENT_B.sendMessage(ev, data);
+        this.CLIENTS[0].sendMessage(ev, data);
+        this.CLIENTS[1].sendMessage(ev, data);
     };
     return Room;
 }());

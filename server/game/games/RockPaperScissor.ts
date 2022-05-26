@@ -26,18 +26,14 @@ export class RockPaperScissor extends Game {
             this.playerBScore++;
         }
 
-        this.room.CLIENT_A.SOCKET.emit("rpsRoundInfo", {
-            opponentOption: this.playerBOption,
-            ownScore: this.playerAScore,
-            opponentScore: this.playerBScore
-        })
-        this.room.CLIENT_B.SOCKET.emit("rpsRoundInfo", {
-            opponentOption: this.playerAOption,
-            ownScore: this.playerBScore,
-            opponentScore: this.playerAScore
+        this.room.brodCast("rpsRoundInfo", {
+            playerAOption: this.playerAOption,
+            playerBOption: this.playerBOption,
+            playerAScore: this.playerAScore,
+            playerBScore: this.playerBScore
         })
 
-        await sleep(1000)
+        await sleep(2000)
 
         if (this.playerAScore >= 3) {
             this.room.brodCast("rpsPlayerWon", Player.PLAYER_A)
