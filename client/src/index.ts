@@ -1,6 +1,8 @@
 import {io} from "socket.io-client";
 import {GameTypes, RoomInfo} from "../../types/Types";
 import {closeRoom, gameEnd, onJoinRoom, onNextGameOpinion, onSearchingRoom, startGame} from "./playGame";
+import Cookies from 'js-cookie';
+import {init} from "./joinGame";
 
 export const socket = io();
 
@@ -36,3 +38,17 @@ export function smallPopAnimation(element: HTMLElement) {
     element.classList.add("smallPopAnimation")
     sleep(600).then(() => element.classList.remove("smallPopAnimation"))
 }
+
+//read cookie data
+export let cookiesEnabled = Boolean(Cookies.get("enabled"));
+
+if (!cookiesEnabled) {
+    if (confirm("🍪? do you want Cookies?")) {
+        Cookies.set("enabled", "true")
+        cookiesEnabled = true;
+    } else {
+        Cookies.set("enabled", "false", {expires: 7})
+    }
+}
+
+init()

@@ -1,10 +1,13 @@
-import {socket} from "./index";
+import {cookiesEnabled, socket} from "./index";
+import Cookies from 'js-cookie';
 
 export const gameTypes = ["rockPaperScissor"]
 
 const userNameInput = document.getElementById("userNameInput") as HTMLInputElement;
 
 const chooseGameDiv = document.getElementById("chooseGames")!;
+
+let enabledGames: Boolean[] = [];
 
 document.getElementById("joinButton")!.addEventListener("click", () => {
     let name = userNameInput.value.trim();
@@ -14,25 +17,65 @@ document.getElementById("joinButton")!.addEventListener("click", () => {
         return
     }
 
+    if (cookiesEnabled) {
+        Cookies.set("name", name, {expires: 30})
+    }
+
+    let oneGameIsEnabled = false;
+
+    for (let i = 0; i < enabledGames.length; i++) {
+        if (enabledGames[i]) {
+            oneGameIsEnabled = true;
+        }
+
+        if (cookiesEnabled) {
+            Cookies.set("gameEnabled" + i, String(enabledGames[i]), {expires: 30})
+        }
+    }
+
+    if (!oneGameIsEnabled) {
+        alert("You need to Enable at leased one Game")
+        return
+    }
+
     document.getElementById("userName")!.innerText = name;
 
     socket.emit("joinGameQue", (name))
 })
 
-for (let i = 0; i < gameTypes.length; i++) {
-    let checkBox = document.createElement("input");
-    checkBox.type = "checkbox"
+export function init() {
+    if (cookiesEnabled) {
+        let name = Cookies.get("name");
+        (document.getElementById("userNameInput") as HTMLInputElement).value = name ? name : ""
+    }
 
-    checkBox.addEventListener("click", () => {
-        if (checkBox.checked) {
-            socket.emit("addGameToPlay", i)
-        } else {
-            socket.emit("removeGameToPlay", i)
+    for (let i = 0; i < gameTypes.length; i++) {
+        let checkBox = document.createElement("input");
+        checkBox.type = "checkbox"
+
+        if (cookiesEnabled) {
+            let enabled = Boolean(Cookies.get("gameEnabled" + i));
+            if (enabled) {
+                checkBox.checked = true;
+                socket.emit("addGameToPlay", i)
+            }
         }
-    })
 
-    chooseGameDiv.innerHTML += gameTypes[i]
-    chooseGameDiv.innerHTML += " : "
-    chooseGameDiv.appendChild(checkBox)
+        enabledGames[i] = checkBox.checked;
+
+        checkBox.addEventListener("click", () => {
+            if (checkBox.checked) {
+                socket.emit("addGameToPlay", i)
+            } else {
+                socket.emit("removeGameToPlay", i)
+            }
+
+            enabledGames[i] = checkBox.checked;
+        })
+
+        chooseGameDiv.innerHTML += gameTypes[i]
+        chooseGameDiv.innerHTML += " : "
+        chooseGameDiv.appendChild(checkBox)
+    }
 }
 
