@@ -4,7 +4,7 @@ export const gameTypes = ["rockPaperScissor"]
 
 const userNameInput = document.getElementById("userNameInput") as HTMLInputElement;
 
-const chooseGameUl = document.getElementById("chooseGames")!;
+const chooseGameDiv = document.getElementById("chooseGames")!;
 
 document.getElementById("joinButton")!.addEventListener("click", () => {
     let name = userNameInput.value.trim();
@@ -13,6 +13,8 @@ document.getElementById("joinButton")!.addEventListener("click", () => {
         alert("User name can not be empty")
         return
     }
+
+    document.getElementById("userName")!.innerText = name;
 
     socket.emit("joinGameQue", (name))
 })
@@ -29,8 +31,8 @@ for (let i = 0; i < gameTypes.length; i++) {
         }
     })
 
-    chooseGameUl.innerHTML += gameTypes[i]
-    chooseGameUl.innerHTML += " : "
-    chooseGameUl.appendChild(checkBox)
+    chooseGameDiv.innerHTML += gameTypes[i]
+    chooseGameDiv.innerHTML += " : "
+    chooseGameDiv.appendChild(checkBox)
 }
 

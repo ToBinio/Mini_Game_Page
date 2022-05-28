@@ -1,0 +1,36 @@
+#chooseGames {
+    font-size: 15px;
+}
+
+#joinButton {
+    width: max-content;
+
+    padding: 15% 20%;
+
+    border-radius: 5px;
+
+    margin-top: 20%;
+
+    transition: 0.2s;
+}
+
+
+#joinButton:hover {
+    border-radius: 10px;
+
+    filter: drop-shadow(2px 3px 2px rgb(0 0 0 / 0.8));
+}
+
+#userNameInput {
+    padding: 5% 5%;
+
+    background-color: transparent;
+
+    border-top: none;
+    border-left: none;
+    border-right: none;
+}
+
+#userNameInput:-webkit-autofill {
+    background-color: transparent !important;
+}

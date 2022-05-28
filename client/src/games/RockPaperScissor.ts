@@ -1,11 +1,12 @@
 import {Game} from "./Game";
-import {socket} from "../index";
+import {popAnimation, socket} from "../index";
 import {Player} from "../../../types/Types";
 
 import rockSvg from '../../images/rockPaperScissor/rock.svg';
 import paperSvg from "../../images/rockPaperScissor/paper.svg";
 import scissorSvg from "../../images/rockPaperScissor/scissors.svg";
-import {isPlayerA} from "../playGame";
+import {currentPlayer, isPlayerA, opponentName} from "../playGame";
+import {setStateInfo} from "../stateManger";
 
 export class RockPaperScissor extends Game {
 
@@ -13,7 +14,7 @@ export class RockPaperScissor extends Game {
     private paperButton: HTMLButtonElement | undefined;
     private scissorButton: HTMLButtonElement | undefined;
 
-    private ownScore: HTMLElement | undefined;
+    private userScore: HTMLElement | undefined;
     private opponentScore: HTMLElement | undefined;
 
     private buttonsDiv: HTMLElement | undefined;
@@ -22,12 +23,12 @@ export class RockPaperScissor extends Game {
 
     setUpHTML(element: HTMLElement): void {
 
-        element.innerHTML = "<div class='rpsSpace'><div class='rpsScore'>0</div><div id='rpsButtons'></div></div><div id='rpsVS'><span>VS</span></div><div class='rpsSpace'><div class='rpsScore'>0</div><div id='rpsOpponent'></div></div>"
+        element.innerHTML = "<div class='rpsSpace'><div class='rpsScore user'>0</div><div id='rpsButtons'></div></div><div id='rpsVS'><span>VS</span></div><div class='rpsSpace'><div class='rpsScore opponent'>0</div><div id='rpsOpponent'></div></div>"
 
         this.buttonsDiv = document.getElementById("rpsButtons")!;
         this.opponentDiv = document.getElementById("rpsOpponent")!;
 
-        this.ownScore = element.getElementsByClassName("rpsScore")[0] as HTMLElement;
+        this.userScore = element.getElementsByClassName("rpsScore")[0] as HTMLElement;
         this.opponentScore = element.getElementsByClassName("rpsScore")[1] as HTMLElement;
 
         //player Buttons
@@ -56,13 +57,17 @@ export class RockPaperScissor extends Game {
             this.clearOptions()
         })
         socket.on("rpsPlayerWon", (winner: Player) => {
-            alert("Player " + winner + " won")
+            if (winner == currentPlayer) {
+                setStateInfo("you have Won! :)")
+            } else {
+                setStateInfo(opponentName + " has Won! :(")
+            }
 
             this.setButtonState(true)
         })
         socket.on("rpsRoundInfo", (info: { playerAOption: Options, playerBOption: Options, playerAScore: number, playerBScore: number }) => {
             let opponentOption = isPlayerA() ? info.playerBOption : info.playerAOption;
-            
+
             switch (opponentOption) {
                 case Options.ROCK:
                     this.opponentDiv?.children.item(0)!.classList.add("chosen")
@@ -77,8 +82,20 @@ export class RockPaperScissor extends Game {
 
             this.opponentDiv?.classList.add("chosen")
 
-            this.ownScore!.innerText = String(isPlayerA() ? info.playerAScore : info.playerBScore);
-            this.opponentScore!.innerText = String(isPlayerA() ? info.playerBScore : info.playerAScore);
+            let newUserScore = String(isPlayerA() ? info.playerAScore : info.playerBScore);
+            let newOpponentScore = String(isPlayerA() ? info.playerBScore : info.playerAScore);
+
+            if (newUserScore != this.userScore?.innerText) {
+                this.userScore!.innerText = newUserScore;
+
+                popAnimation(this.userScore!)
+            }
+
+            if (newOpponentScore != this.opponentScore?.innerText) {
+                this.opponentScore!.innerText = newOpponentScore;
+
+                popAnimation(this.opponentScore!)
+            }
         })
     }
 

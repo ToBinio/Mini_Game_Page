@@ -1,5 +1,11 @@
-body {
-    background-color: #1f1f29;
+:root {
+    --bg: #1f1f29;
+    --darker: #0f0f19;
+    --brigther: #3f3f49;
+    --very_brigther: #5f5f69;
+
+    --user: #6785de;
+    --opponent: #f75e77;
 }
 
 * {
@@ -7,7 +13,70 @@ body {
     color: white;
 }
 
+body {
+    background-color: var(--bg);
+    width: 80%;
+
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+body h1 {
+    text-align: center;
+}
+
+hr {
+    border-color: var(--brigther);
+    border-style: solid;
+}
+
 button {
     background-color: transparent;
     border-style: solid;
+
+    border-color: var(--very_brigther);;
+}
+
+.popAnimation {
+    animation: popAnimation 1s !important;
+}
+
+@keyframes popAnimation {
+    from {
+        transform: scale(1);
+    }
+
+    25% {
+        transform: scale(1.5);
+    }
+
+    75% {
+        transform: scale(0.8);
+    }
+
+    to {
+        transform: scale(1);
+    }
+}
+
+.smallPopAnimation {
+    animation: smallPopAnimation 0.6s !important;
+}
+
+@keyframes smallPopAnimation {
+    from {
+        transform: scale(1);
+    }
+
+    25% {
+        transform: scale(1.15);
+    }
+
+    75% {
+        transform: scale(0.95);
+    }
+
+    to {
+        transform: scale(1);
+    }
 }

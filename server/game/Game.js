@@ -7,7 +7,6 @@ var Game = /** @class */ (function () {
         this.room = room;
         this.setUpSocket(room.CLIENTS[0], Types_1.Player.PLAYER_A);
         this.setUpSocket(room.CLIENTS[1], Types_1.Player.PLAYER_B);
-        //todo only start when both player gave ready
         this.start();
     }
     return Game;

@@ -3,7 +3,6 @@
 
     margin: 5%;
     width: 90%;
-    height: 300px;
 
     justify-content: space-around;
 
@@ -44,7 +43,7 @@
 
     width: 80%;
 
-    margin: 5%;
+    margin: 10%;
 
     transition: 0.5s;
 }
@@ -52,11 +51,15 @@
 #rpsButtons, #rpsOpponent {
     display: flex;
     width: 100% !important;
-    height: 90% !important;
+    margin-top: 10%;
 
     justify-content: center;
     align-items: center;
     align-content: center;
+}
+
+#rpsOpponent {
+    height: 80% !important;
 }
 
 #rpsButtons button:hover img, #rpsButtons button.chosen img {
@@ -66,7 +69,7 @@
 }
 
 #rpsButtons button:hover img {
-    filter: drop-shadow(7px 9px 3px rgb(0 0 0 / 0.4));
+    filter: drop-shadow(7px 9px 3px rgb(0 0 0 / 0.8));
 }
 
 #rpsButtons button:disabled:not(.chosen) {
@@ -76,14 +79,17 @@
 
 
 #rpsOpponent img {
-    width: 7.5%;
-    filter: grayscale(0.8);
+    margin-top: 6.6%;
+
+    width: 26.4%;
+    filter: grayscale(1) blur(1px);
 
     transition: 0.4s ease-in;
 
 }
 
 #rpsOpponent.chosen img {
+    margin: 0;
     width: 0;
 }
 
@@ -91,6 +97,18 @@
     width: 33%;
 
     filter: grayscale(0);
+}
+
+.rpsScore {
+    transition: 0.5s;
+}
+
+.rpsScore.opponent.popAnimation {
+    color: var(--opponent);
+}
+
+.rpsScore.user.popAnimation {
+    color: var(--user);
 }
 
 #rpsVS {

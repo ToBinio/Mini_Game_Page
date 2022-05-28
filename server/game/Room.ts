@@ -43,7 +43,7 @@ export class Room {
         if (winner == Player.PLAYER_A) this.clientsScores[0]++;
         else this.clientsScores[1]++;
 
-        this.brodCast("roomScores", this.clientsScores)
+        this.brodCast("gameEnd", this.clientsScores)
 
         this.game.tearDownSocket(this.CLIENTS[0], Player.PLAYER_A);
         this.game.tearDownSocket(this.CLIENTS[1], Player.PLAYER_B);
@@ -57,10 +57,10 @@ export class Room {
 
         if (client.getName() == this.CLIENTS[0].getName()) {
             this.nextGameOpinion[0] = !this.nextGameOpinion[0];
-            this.brodCast("nextGameOpinion", {who: Player.PLAYER_A, opinion: this.nextGameOpinion[0]})
+            this.brodCast("nextGameOpinion", this.nextGameOpinion[0])
         } else {
             this.nextGameOpinion[1] = !this.nextGameOpinion[1];
-            this.brodCast("nextGameOpinion", {who: Player.PLAYER_B, opinion: this.nextGameOpinion[1]})
+            this.brodCast("nextGameOpinion", this.nextGameOpinion[1])
         }
 
         if (this.nextGameOpinion[0] && this.nextGameOpinion[1]) {

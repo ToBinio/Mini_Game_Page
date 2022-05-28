@@ -27,7 +27,7 @@ export class RockPaperScissor extends Game {
                 this.playerBScore++;
             }
         }
-
+        
         this.room.brodCast("rpsRoundInfo", {
             playerAOption: this.playerAOption,
             playerBOption: this.playerBOption,

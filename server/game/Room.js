@@ -30,7 +30,7 @@ var Room = /** @class */ (function () {
             this.clientsScores[0]++;
         else
             this.clientsScores[1]++;
-        this.brodCast("roomScores", this.clientsScores);
+        this.brodCast("gameEnd", this.clientsScores);
         this.game.tearDownSocket(this.CLIENTS[0], Types_1.Player.PLAYER_A);
         this.game.tearDownSocket(this.CLIENTS[1], Types_1.Player.PLAYER_B);
         this.game = undefined;
@@ -40,11 +40,11 @@ var Room = /** @class */ (function () {
             return;
         if (client.getName() == this.CLIENTS[0].getName()) {
             this.nextGameOpinion[0] = !this.nextGameOpinion[0];
-            this.brodCast("nextGameOpinion", { who: Types_1.Player.PLAYER_A, opinion: this.nextGameOpinion[0] });
+            this.brodCast("nextGameOpinion", this.nextGameOpinion[0]);
         }
         else {
             this.nextGameOpinion[1] = !this.nextGameOpinion[1];
-            this.brodCast("nextGameOpinion", { who: Types_1.Player.PLAYER_B, opinion: this.nextGameOpinion[1] });
+            this.brodCast("nextGameOpinion", this.nextGameOpinion[1]);
         }
         if (this.nextGameOpinion[0] && this.nextGameOpinion[1]) {
             this.nextGameOpinion[0] = false;

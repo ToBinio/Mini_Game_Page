@@ -11,7 +11,6 @@ export abstract class Game {
         this.setUpSocket(room.CLIENTS[0], Player.PLAYER_A);
         this.setUpSocket(room.CLIENTS[1], Player.PLAYER_B);
 
-        //todo only start when both player gave ready
         this.start();
     }
 
