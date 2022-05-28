@@ -48,14 +48,13 @@ export class Room {
         this.game.tearDownSocket(this.CLIENTS[0], Player.PLAYER_A);
         this.game.tearDownSocket(this.CLIENTS[1], Player.PLAYER_B);
 
-        this.game = undefined;
+        this.game = null;
     }
 
     public setNextGameOpinion(client: Client) {
-
         if (this.game != null) return;
 
-        if (client.getName() == this.CLIENTS[0].getName()) {
+        if (client == this.CLIENTS[0]) {
             this.nextGameOpinion[0] = !this.nextGameOpinion[0];
             this.brodCast("nextGameOpinion", this.nextGameOpinion[0])
         } else {

@@ -1,11 +1,11 @@
 import {Socket} from "socket.io";
 import {addClientToQue, removeClientFromQue} from "./Clients";
 import {Room} from "../game/Room";
-import {GameTypes, RoomInfo} from "../../types/Types";
+import {RoomInfo} from "../../types/Types";
 
 export class Client {
     public readonly SOCKET: Socket;
-    private readonly GAMES_TO_PLAY: Boolean[];
+    private GAMES_TO_PLAY: Boolean[];
 
     private name: string;
 
@@ -26,21 +26,14 @@ export class Client {
     }
 
     private initSocket() {
-        this.SOCKET.on("addGameToPlay", (game: GameTypes) => {
-            if (this.clientState != ClientState.SLEEPING) return
-            
-            this.GAMES_TO_PLAY[game] = true;
-        })
-
-        this.SOCKET.on("removeGameToPlay", (game: GameTypes) => {
+        this.SOCKET.on("joinGameQue", (data: { name: string, enabledGames: boolean[] }) => {
             if (this.clientState != ClientState.SLEEPING) return
 
-            this.GAMES_TO_PLAY[game] = false;
-        })
+            this.name = data.name;
 
-        this.SOCKET.on("joinGameQue", (name: string) => {
-            if (this.clientState != ClientState.SLEEPING) return
+            this.GAMES_TO_PLAY = data.enabledGames;
 
+            //check if at leased on game is True(on)
             let hasGameToPlay = false;
 
             for (let boolean of this.GAMES_TO_PLAY) {
@@ -51,8 +44,6 @@ export class Client {
             }
 
             if (!hasGameToPlay) return;
-
-            this.name = name;
 
             this.clientState = ClientState.SEARCHING_GAME
             this.SOCKET.emit("startSearchingRoom", this.GAMES_TO_PLAY)

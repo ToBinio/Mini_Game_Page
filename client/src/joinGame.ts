@@ -7,7 +7,7 @@ const userNameInput = document.getElementById("userNameInput") as HTMLInputEleme
 
 const chooseGameDiv = document.getElementById("chooseGames")!;
 
-let enabledGames: Boolean[] = [];
+let enabledGames: boolean[] = [];
 
 document.getElementById("joinButton")!.addEventListener("click", () => {
     let name = userNameInput.value.trim();
@@ -40,7 +40,7 @@ document.getElementById("joinButton")!.addEventListener("click", () => {
 
     document.getElementById("userName")!.innerText = name;
 
-    socket.emit("joinGameQue", (name))
+    socket.emit("joinGameQue", {"name": name, "enabledGames": enabledGames})
 })
 
 export function init() {
@@ -57,19 +57,12 @@ export function init() {
             let enabled = Boolean(Cookies.get("gameEnabled" + i));
             if (enabled) {
                 checkBox.checked = true;
-                socket.emit("addGameToPlay", i)
             }
         }
 
         enabledGames[i] = checkBox.checked;
 
         checkBox.addEventListener("click", () => {
-            if (checkBox.checked) {
-                socket.emit("addGameToPlay", i)
-            } else {
-                socket.emit("removeGameToPlay", i)
-            }
-
             enabledGames[i] = checkBox.checked;
         })
 

@@ -14,19 +14,12 @@ var Client = /** @class */ (function () {
     };
     Client.prototype.initSocket = function () {
         var _this = this;
-        this.SOCKET.on("addGameToPlay", function (game) {
+        this.SOCKET.on("joinGameQue", function (data) {
             if (_this.clientState != ClientState.SLEEPING)
                 return;
-            _this.GAMES_TO_PLAY[game] = true;
-        });
-        this.SOCKET.on("removeGameToPlay", function (game) {
-            if (_this.clientState != ClientState.SLEEPING)
-                return;
-            _this.GAMES_TO_PLAY[game] = false;
-        });
-        this.SOCKET.on("joinGameQue", function (name) {
-            if (_this.clientState != ClientState.SLEEPING)
-                return;
+            _this.name = data.name;
+            _this.GAMES_TO_PLAY = data.enabledGames;
+            //check if at leased on game is True(on)
             var hasGameToPlay = false;
             for (var _i = 0, _a = _this.GAMES_TO_PLAY; _i < _a.length; _i++) {
                 var boolean = _a[_i];
@@ -37,7 +30,6 @@ var Client = /** @class */ (function () {
             }
             if (!hasGameToPlay)
                 return;
-            _this.name = name;
             _this.clientState = ClientState.SEARCHING_GAME;
             _this.SOCKET.emit("startSearchingRoom", _this.GAMES_TO_PLAY);
             (0, Clients_1.addClientToQue)(_this);
