@@ -52,53 +52,40 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RockPaperScissor = void 0;
-var Game_1 = require("../Game");
 var Types_1 = require("../../../types/Types");
 var app_1 = require("../../app");
+var RoundBasedGame_1 = require("./prefabs/RoundBasedGame");
 var RockPaperScissor = /** @class */ (function (_super) {
     __extends(RockPaperScissor, _super);
-    function RockPaperScissor(room) {
-        var _this = _super.call(this, room) || this;
-        _this.playerAScore = 0;
-        _this.playerBScore = 0;
-        return _this;
+    function RockPaperScissor() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     RockPaperScissor.prototype.start = function () {
         this.room.brodCast("rpsStartRound");
     };
-    RockPaperScissor.prototype.round = function () {
+    RockPaperScissor.prototype.computeRoundWinner = function () {
+        this.room.brodCast("rpsRoundInfo", {
+            playerAOption: this.playerAOption,
+            playerBOption: this.playerBOption
+        });
+        if (this.playerAOption != this.playerBOption) {
+            if ((this.playerAOption + 1) % 3 == this.playerBOption) {
+                return Types_1.Player.PLAYER_A;
+            }
+            else {
+                return Types_1.Player.PLAYER_B;
+            }
+        }
+        return undefined;
+    };
+    RockPaperScissor.prototype.startRound = function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        if (this.playerAOption != this.playerBOption) {
-                            if ((this.playerAOption + 1) % 3 == this.playerBOption) {
-                                this.playerAScore++;
-                            }
-                            else {
-                                this.playerBScore++;
-                            }
-                        }
-                        this.room.brodCast("rpsRoundInfo", {
-                            playerAOption: this.playerAOption,
-                            playerBOption: this.playerBOption,
-                            playerAScore: this.playerAScore,
-                            playerBScore: this.playerBScore
-                        });
-                        return [4 /*yield*/, (0, app_1.sleep)(2000)];
+                    case 0: return [4 /*yield*/, (0, app_1.sleep)(2000)];
                     case 1:
                         _a.sent();
-                        if (this.playerAScore >= 3) {
-                            this.room.brodCast("rpsPlayerWon", Types_1.Player.PLAYER_A);
-                            this.room.endGame(Types_1.Player.PLAYER_A);
-                        }
-                        else if (this.playerBScore >= 3) {
-                            this.room.brodCast("rpsPlayerWon", Types_1.Player.PLAYER_B);
-                            this.room.endGame(Types_1.Player.PLAYER_B);
-                        }
-                        else {
-                            this.room.brodCast("rpsStartRound");
-                        }
+                        this.room.brodCast("rpsStartRound");
                         this.playerAOption = undefined;
                         this.playerBOption = undefined;
                         return [2 /*return*/];
@@ -111,21 +98,19 @@ var RockPaperScissor = /** @class */ (function (_super) {
         client.SOCKET.on("rpsChooseOption", function (option) {
             if (player == Types_1.Player.PLAYER_A) {
                 _this.playerAOption = option;
-                if (_this.playerBOption != undefined)
-                    _this.round().then();
             }
             else {
                 _this.playerBOption = option;
-                if (_this.playerAOption != undefined)
-                    _this.round().then();
             }
+            if (_this.playerAOption != undefined && _this.playerBOption != undefined)
+                _this.nextRound();
         });
     };
     RockPaperScissor.prototype.tearDownSocket = function (client, player) {
         client.SOCKET.removeAllListeners("rpsChooseOption");
     };
     return RockPaperScissor;
-}(Game_1.Game));
+}(RoundBasedGame_1.RoundBasedGame));
 exports.RockPaperScissor = RockPaperScissor;
 var Options;
 (function (Options) {

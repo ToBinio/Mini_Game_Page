@@ -54,7 +54,7 @@ var Client = /** @class */ (function () {
         var gamePairs = [];
         for (var i = 0; i < this.GAMES_TO_PLAY.length; i++) {
             if (otherClient.GAMES_TO_PLAY[i] && this.GAMES_TO_PLAY[i])
-                gamePairs[i] = true;
+                gamePairs.push(i);
         }
         return gamePairs;
     };

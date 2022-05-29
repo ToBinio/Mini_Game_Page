@@ -1,7 +1,7 @@
 import {cookiesEnabled, socket} from "./index";
 import Cookies from 'js-cookie';
 
-export const gameTypes = ["rockPaperScissor"]
+export const gameNames = ["Rock-Paper-Scissor", "Tik-Tak-Toe"]
 
 const userNameInput = document.getElementById("userNameInput") as HTMLInputElement;
 
@@ -49,12 +49,13 @@ export function init() {
         (document.getElementById("userNameInput") as HTMLInputElement).value = name ? name : ""
     }
 
-    for (let i = 0; i < gameTypes.length; i++) {
+    for (let i = 0; i < gameNames.length; i++) {
         let checkBox = document.createElement("input");
+
         checkBox.type = "checkbox"
 
         if (cookiesEnabled) {
-            let enabled = Boolean(Cookies.get("gameEnabled" + i));
+            let enabled = Cookies.get("gameEnabled" + i) == "true";
             if (enabled) {
                 checkBox.checked = true;
             }
@@ -62,13 +63,21 @@ export function init() {
 
         enabledGames[i] = checkBox.checked;
 
-        checkBox.addEventListener("click", () => {
+        checkBox.onclick = () => {
             enabledGames[i] = checkBox.checked;
-        })
+        }
 
-        chooseGameDiv.innerHTML += gameTypes[i]
-        chooseGameDiv.innerHTML += " : "
-        chooseGameDiv.appendChild(checkBox)
+        let textSpan = document.createElement("span");
+
+        textSpan.innerHTML += gameNames[i]
+        textSpan.innerHTML += " : "
+
+        let div = document.createElement("div");
+
+        div.appendChild(textSpan)
+        div.appendChild(checkBox)
+
+        chooseGameDiv.appendChild(div)
     }
 }
 

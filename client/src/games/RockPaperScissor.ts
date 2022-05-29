@@ -1,21 +1,15 @@
-import {Game} from "./Game";
-import {popAnimation, socket} from "../index";
-import {Player} from "../../../types/Types";
+import {socket} from "../index";
 
 import rockSvg from '../../images/rockPaperScissor/rock.svg';
 import paperSvg from "../../images/rockPaperScissor/paper.svg";
 import scissorSvg from "../../images/rockPaperScissor/scissors.svg";
-import {currentPlayer, isPlayerA, opponentName} from "../playGame";
-import {setStateInfo} from "../stateManger";
+import {isPlayerA} from "../playGame";
+import {RoundBasedGame} from "./prefabs/RoundBasedGame";
 
-export class RockPaperScissor extends Game {
-
+export class RockPaperScissor extends RoundBasedGame {
     private rockButton: HTMLButtonElement | undefined;
     private paperButton: HTMLButtonElement | undefined;
     private scissorButton: HTMLButtonElement | undefined;
-
-    private userScore: HTMLElement | undefined;
-    private opponentScore: HTMLElement | undefined;
 
     private buttonsDiv: HTMLElement | undefined;
     private opponentDiv: HTMLElement | undefined;
@@ -52,20 +46,14 @@ export class RockPaperScissor extends Game {
     }
 
     setUpSocket(): void {
+        super.setUpSocket()
+
         socket.on("rpsStartRound", () => {
             this.setButtonState(false)
             this.clearOptions()
         })
-        socket.on("rpsPlayerWon", (winner: Player) => {
-            if (winner == currentPlayer) {
-                setStateInfo("you have Won! :)")
-            } else {
-                setStateInfo(opponentName + " has Won! :(")
-            }
 
-            this.setButtonState(true)
-        })
-        socket.on("rpsRoundInfo", (info: { playerAOption: Options, playerBOption: Options, playerAScore: number, playerBScore: number }) => {
+        socket.on("rpsRoundInfo", (info: { playerAOption: Options, playerBOption: Options }) => {
             let opponentOption = isPlayerA() ? info.playerBOption : info.playerAOption;
 
             switch (opponentOption) {
@@ -81,28 +69,18 @@ export class RockPaperScissor extends Game {
             }
 
             this.opponentDiv?.classList.add("chosen")
-
-            let newUserScore = String(isPlayerA() ? info.playerAScore : info.playerBScore);
-            let newOpponentScore = String(isPlayerA() ? info.playerBScore : info.playerAScore);
-
-            if (newUserScore != this.userScore?.innerText) {
-                this.userScore!.innerText = newUserScore;
-
-                popAnimation(this.userScore!)
-            }
-
-            if (newOpponentScore != this.opponentScore?.innerText) {
-                this.opponentScore!.innerText = newOpponentScore;
-
-                popAnimation(this.opponentScore!)
-            }
         })
     }
 
     tearDownSocket(): void {
+        super.tearDownSocket()
+
         socket.removeAllListeners("rpsStartRound")
-        socket.removeAllListeners("rpsPlayerWon")
         socket.removeAllListeners("rpsRoundInfo")
+    }
+
+    resetAfterGame(): void {
+        this.setButtonState(false)
     }
 
     createButton(option: Options, url: string): HTMLButtonElement {

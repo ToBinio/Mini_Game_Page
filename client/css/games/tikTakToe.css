@@ -1,0 +1,60 @@
+#tttPlayField {
+    display: grid;
+
+    width: 40%;
+
+    aspect-ratio: 1/1;
+
+    grid-template-columns: 1fr 1fr 1fr;
+
+    border-collapse: collapse;
+}
+
+#tttPlayField button {
+    border: var(--darker) 1px solid;
+
+    padding: 0;
+}
+
+#tttPlayField button div {
+    border: none;
+
+    width: 100%;
+    height: 100%;
+
+    transition: 0.3s ease-in;
+
+    border-radius: 50%;
+
+    transform: scale(0.4);
+
+}
+
+
+#tttPlayField button:not(:disabled):hover {
+    background-color: var(--darker);
+}
+
+#tttPlayField button.tttUser div, #tttPlayField button.tttOpponent div {
+    transform: scale(0.8);
+}
+
+#tttPlayField.tttWinner button:not(.tttWinner) div {
+    transform: scale(0.6);
+}
+
+#tttPlayField.tttWinner button.tttWinner div {
+    filter: drop-shadow(5px 6px 3px rgb(0 0 0 / 0.6));
+}
+
+#tttPlayField button.tttUser div {
+    background-color: var(--user);
+}
+
+#tttPlayField button.tttOpponent div {
+    background-color: var(--opponent);
+}
+
+#tttScoreUser, #tttScoreOpponent {
+    height: max-content;
+}

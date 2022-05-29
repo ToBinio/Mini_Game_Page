@@ -1,9 +1,10 @@
-import {gameTypes} from "./joinGame";
+import {gameNames} from "./joinGame";
 import {Player, RoomInfo} from "../../types/Types";
 import {setState, setStateInfo, state} from "./stateManger";
 import {Game} from "./games/Game";
 import {RockPaperScissor} from "./games/RockPaperScissor";
 import {sleep, smallPopAnimation, socket} from "./index";
+import {TickTackToe} from "./games/TickTackToe";
 
 const possibleGamesDiv = document.getElementById("possibleGames")! as HTMLUListElement;
 const gameSpaceDiv = document.getElementById("gameSpace")! as HTMLElement;
@@ -23,7 +24,7 @@ export function isPlayerA(): boolean {
 }
 
 export function onSearchingRoom(gamesToPLay: boolean[]) {
-    displayPossibleGames(gamesToPLay);
+    displayQueuedGamed(gamesToPLay);
 
     setState(state.WAITING_ON_OPPONENT)
     setStateInfo("searching for Game")
@@ -51,17 +52,26 @@ export function closeRoom() {
     alert("closed Room")
 }
 
-function displayPossibleGames(possibleGame: boolean[]) {
-
+function displayQueuedGamed(queuedGames: boolean[]) {
     possibleGamesDiv.innerHTML = "";
 
-    for (let i = 0; i < possibleGame.length; i++) {
-        if (possibleGame[i]) {
+    for (let i = 0; i < queuedGames.length; i++) {
+        if (queuedGames[i]) {
             let element = document.createElement("span");
-            element.innerText = gameTypes[i];
+            element.innerText = gameNames[i];
             possibleGamesDiv.appendChild(element)
         }
 
+    }
+}
+
+function displayPossibleGames(possibleGame: GameTypes[]) {
+    possibleGamesDiv.innerHTML = "";
+
+    for (let i = 0; i < possibleGame.length; i++) {
+        let element = document.createElement("span");
+        element.innerText = gameNames[possibleGame[i]];
+        possibleGamesDiv.appendChild(element)
     }
 }
 
@@ -98,10 +108,12 @@ export async function startGame(type: GameTypes) {
 
     if (currentGame) currentGame.tearDownSocket()
 
-    setStateInfo("Playing " + gameTypes[type])
+    setStateInfo("Playing " + gameNames[type])
 
     if (type == GameTypes.ROCK_PAPER_SCISSOR) {
         currentGame = new RockPaperScissor();
+    } else if (type == GameTypes.TIK_TAK_TOE) {
+        currentGame = new TickTackToe();
     }
 
     currentGame.setUpHTML(gameSpaceDiv);
@@ -134,5 +146,5 @@ export function resetPlayGame() {
 }
 
 export enum GameTypes {
-    ROCK_PAPER_SCISSOR
+    ROCK_PAPER_SCISSOR, TIK_TAK_TOE
 }

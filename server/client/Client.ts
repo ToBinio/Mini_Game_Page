@@ -1,7 +1,7 @@
 import {Socket} from "socket.io";
 import {addClientToQue, removeClientFromQue} from "./Clients";
 import {Room} from "../game/Room";
-import {RoomInfo} from "../../types/Types";
+import {GameTypes, RoomInfo} from "../../types/Types";
 
 export class Client {
     public readonly SOCKET: Socket;
@@ -68,12 +68,12 @@ export class Client {
         this.SOCKET.emit(ev, data);
     }
 
-    public getGamePairs(otherClient: Client): boolean[] {
+    public getGamePairs(otherClient: Client): GameTypes[] {
 
-        let gamePairs: boolean[] = []
+        let gamePairs: GameTypes[] = []
 
         for (let i = 0; i < this.GAMES_TO_PLAY.length; i++) {
-            if (otherClient.GAMES_TO_PLAY[i] && this.GAMES_TO_PLAY[i]) gamePairs[i] = true;
+            if (otherClient.GAMES_TO_PLAY[i] && this.GAMES_TO_PLAY[i]) gamePairs.push(i);
         }
 
         return gamePairs

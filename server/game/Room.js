@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Room = void 0;
 var Types_1 = require("../../types/Types");
 var RockPaperScissor_1 = require("./games/RockPaperScissor");
+var TickTackToe_1 = require("./games/TickTackToe");
 var Room = /** @class */ (function () {
     function Room(clientA, clientB, possibleGames) {
         this.clientsScores = [0, 0];
@@ -21,9 +22,23 @@ var Room = /** @class */ (function () {
         this.startRandomGame();
     }
     Room.prototype.startRandomGame = function () {
-        //todo choose random Game
-        this.brodCast("startGame", Types_1.GameTypes.ROCK_PAPER_SCISSOR);
-        this.game = new RockPaperScissor_1.RockPaperScissor(this);
+        var chosenGameIndex = this.lastIndexGame;
+        //try to not take the same game as before
+        if (this.POSSIBLE_GAMES.length != 1 || !this.lastIndexGame) {
+            chosenGameIndex = Math.floor(Math.random() * (this.POSSIBLE_GAMES.length - 1));
+            if (chosenGameIndex >= this.lastIndexGame) {
+                chosenGameIndex = (chosenGameIndex + 1) % this.POSSIBLE_GAMES.length;
+            }
+        }
+        this.lastIndexGame = chosenGameIndex;
+        var chosenGame = this.POSSIBLE_GAMES[chosenGameIndex];
+        this.brodCast("startGame", chosenGame);
+        if (chosenGame == Types_1.GameTypes.ROCK_PAPER_SCISSOR) {
+            this.game = new RockPaperScissor_1.RockPaperScissor(this, 5);
+        }
+        else if (chosenGame == Types_1.GameTypes.TICK_TACK_TOE) {
+            this.game = new TickTackToe_1.TickTackToe(this, 3);
+        }
     };
     Room.prototype.endGame = function (winner) {
         if (winner == Types_1.Player.PLAYER_A)

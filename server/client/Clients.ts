@@ -8,7 +8,7 @@ export function addClientToQue(client: Client) {
     for (let i = 0; i < clients.length; i++) {
         let gamePairs = client.getGamePairs(clients[i]);
 
-        if (gamePairs.indexOf(true) != -1) {
+        if (gamePairs.length > 0) {
             new Room(client, clients[i], gamePairs)
 
             clients.splice(i, 1);

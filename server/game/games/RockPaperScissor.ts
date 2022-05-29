@@ -1,73 +1,58 @@
-import {Game} from "../Game";
 import {Client} from "../../client/Client";
 import {Player} from "../../../types/Types";
 import {sleep} from "../../app";
+import {RoundBasedGame} from "./prefabs/RoundBasedGame";
 
-export class RockPaperScissor extends Game {
+export class RockPaperScissor extends RoundBasedGame {
 
     private playerAOption: Options;
     private playerBOption: Options;
-
-    private playerAScore: number = 0;
-    private playerBScore: number = 0;
-
-    constructor(room) {
-        super(room);
-    }
 
     start(): void {
         this.room.brodCast("rpsStartRound");
     }
 
-    async round() {
-        if (this.playerAOption != this.playerBOption) {
-            if ((this.playerAOption + 1) % 3 == this.playerBOption) {
-                this.playerAScore++;
-            } else {
-                this.playerBScore++;
-            }
-        }
-        
+    protected computeRoundWinner() {
         this.room.brodCast("rpsRoundInfo", {
             playerAOption: this.playerAOption,
-            playerBOption: this.playerBOption,
-            playerAScore: this.playerAScore,
-            playerBScore: this.playerBScore
+            playerBOption: this.playerBOption
         })
 
+        if (this.playerAOption != this.playerBOption) {
+            if ((this.playerAOption + 1) % 3 == this.playerBOption) {
+                return Player.PLAYER_A
+            } else {
+                return Player.PLAYER_B
+            }
+        }
+
+        return undefined;
+    }
+
+    protected async startRound() {
         await sleep(2000)
 
-        if (this.playerAScore >= 3) {
-            this.room.brodCast("rpsPlayerWon", Player.PLAYER_A)
-            this.room.endGame(Player.PLAYER_A)
-
-        } else if (this.playerBScore >= 3) {
-            this.room.brodCast("rpsPlayerWon", Player.PLAYER_B)
-            this.room.endGame(Player.PLAYER_B)
-        } else {
-            this.room.brodCast("rpsStartRound");
-        }
+        this.room.brodCast("rpsStartRound");
 
         this.playerAOption = undefined;
         this.playerBOption = undefined;
     }
 
-    setUpSocket(client: Client, player: Player): void {
+    setUpSocket(client: Client, player: Player):
+        void {
         client.SOCKET.on("rpsChooseOption", (option: Options) => {
             if (player == Player.PLAYER_A) {
                 this.playerAOption = option;
-
-                if (this.playerBOption != undefined) this.round().then()
-
             } else {
                 this.playerBOption = option;
-
-                if (this.playerAOption != undefined) this.round().then();
             }
+
+            if (this.playerAOption != undefined && this.playerBOption != undefined) this.nextRound();
         })
     }
 
-    tearDownSocket(client: Client, player: Player): void {
+    tearDownSocket(client: Client, player: Player):
+        void {
         client.SOCKET.removeAllListeners("rpsChooseOption")
     }
 }

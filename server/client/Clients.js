@@ -6,7 +6,7 @@ var clients = [];
 function addClientToQue(client) {
     for (var i = 0; i < clients.length; i++) {
         var gamePairs = client.getGamePairs(clients[i]);
-        if (gamePairs.indexOf(true) != -1) {
+        if (gamePairs.length > 0) {
             new Room_1.Room(client, clients[i], gamePairs);
             clients.splice(i, 1);
             return;

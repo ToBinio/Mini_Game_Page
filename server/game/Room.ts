@@ -2,18 +2,20 @@ import {Client} from "../client/Client";
 import {GameTypes, Player, RoomInfo} from "../../types/Types";
 import {Game} from "./Game";
 import {RockPaperScissor} from "./games/RockPaperScissor";
+import {TickTackToe} from "./games/TickTackToe";
 
 export class Room {
     public readonly CLIENTS: Client[]
 
     private clientsScores: number[] = [0, 0];
 
-    private readonly POSSIBLE_GAMES: boolean[] = []
+    private readonly POSSIBLE_GAMES: GameTypes[] = []
 
     private game: Game;
+    private lastIndexGame: number;
     private nextGameOpinion: boolean[] = [false, false];
 
-    constructor(clientA: Client, clientB: Client, possibleGames: boolean[]) {
+    constructor(clientA: Client, clientB: Client, possibleGames: GameTypes[]) {
         this.CLIENTS = [clientA, clientB];
 
         this.POSSIBLE_GAMES = possibleGames;
@@ -33,10 +35,28 @@ export class Room {
     }
 
     public startRandomGame() {
-        //todo choose random Game
-        this.brodCast("startGame", GameTypes.ROCK_PAPER_SCISSOR)
-        this.game = new RockPaperScissor(this);
+        let chosenGameIndex: number = this.lastIndexGame;
 
+        //try to not take the same game as before
+        if (this.POSSIBLE_GAMES.length != 1 || !this.lastIndexGame) {
+            chosenGameIndex = Math.floor(Math.random() * (this.POSSIBLE_GAMES.length - 1))
+
+            if (chosenGameIndex >= this.lastIndexGame) {
+                chosenGameIndex = (chosenGameIndex + 1) % this.POSSIBLE_GAMES.length
+            }
+        }
+
+        this.lastIndexGame = chosenGameIndex;
+
+        let chosenGame = this.POSSIBLE_GAMES[chosenGameIndex]
+
+        this.brodCast("startGame", chosenGame)
+
+        if (chosenGame == GameTypes.ROCK_PAPER_SCISSOR) {
+            this.game = new RockPaperScissor(this, 5);
+        } else if (chosenGame == GameTypes.TICK_TACK_TOE) {
+            this.game = new TickTackToe(this, 3);
+        }
     }
 
     public endGame(winner: Player) {
