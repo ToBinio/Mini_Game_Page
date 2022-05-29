@@ -115,6 +115,8 @@ export class TickTackToe extends RoundBasedGame {
     protected async startRound() {
         await sleep(2000)
 
+        this.roundWinner = undefined;
+
         for (let x = 0; x < 3; x++) {
             for (let y = 0; y < 3; y++) {
                 this.map[x][y] = FieldState.EMPTY

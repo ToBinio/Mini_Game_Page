@@ -137,6 +137,7 @@ var TickTackToe = /** @class */ (function (_super) {
                     case 0: return [4 /*yield*/, (0, app_1.sleep)(2000)];
                     case 1:
                         _a.sent();
+                        this.roundWinner = undefined;
                         for (x = 0; x < 3; x++) {
                             for (y = 0; y < 3; y++) {
                                 this.map[x][y] = FieldState.EMPTY;
