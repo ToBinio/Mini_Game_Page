@@ -1,6 +1,6 @@
 import {io} from "socket.io-client";
-import {GameTypes, RoomInfo} from "../../types/Types";
-import {closeRoom, gameEnd, onJoinRoom, onNextGameOpinion, onSearchingRoom, startGame} from "./playGame";
+import {RoomInfo} from "../../types/Types";
+import {closeRoom, gameEnd, GameTypes, onJoinRoom, onNextGameOpinion, onSearchingRoom, startGame} from "./playGame";
 import Cookies from 'js-cookie';
 import {init} from "./joinGame";
 
